@@ -1,5 +1,7 @@
 // this sets the background color of the master UIView (when there are no windows/tab groups on it)
 Titanium.UI.setBackgroundColor('#000');
+	db = require('system/db');
+	db.init();
 
 var needSetup = function(e){
 	var setup = Ti.App.Properties.hasProperty("setup");
@@ -14,7 +16,7 @@ var needSetup = function(e){
 	}
 };
 
-//needSetup();
+needSetup();
 
 // Ti.App.addEventListener("resumed", function(e){
 	// needSetup();
@@ -157,21 +159,28 @@ logsButton.addEventListener("click", function(e){
 	tabGroup.setActiveTab(1);
 });
 
+
+
 var tab2 = Titanium.UI.createTab({  
     icon:'KS_nav_ui.png',
     title:'Logs',
     window:win2
 });
 
+//db = require('system/db');
+	
+Logs = require("ui/Logs");
+Logs = new Logs();
+
 var label2 = Titanium.UI.createLabel({
 	color:'#999',
-	text:'Logs',
+	text: "db.show()",
 	font:{fontSize:20,fontFamily:'Helvetica Neue'},
 	textAlign:'center',
 	width:'auto'
 });
 
-win2.add(label2);
+win2.add(Logs);
 
 var win3 = Titanium.UI.createWindow({  
     title:'Account',
@@ -236,14 +245,6 @@ var tab4 = Titanium.UI.createTab({
     title:'About',
     window:win4
 });
-
-// var label4 = Titanium.UI.createLabel({
-	// color:'#999',
-	// text:'I am Window 4',
-	// font:{fontSize:20,fontFamily:'Helvetica Neue'},
-	// textAlign:'center',
-	// width:'auto'
-// });
 
 Info = require("ui/Info");
 Info = new Info();

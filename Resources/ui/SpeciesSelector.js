@@ -305,12 +305,41 @@ for (var i = 0; i < tableData.length; i++) {
 				data: injury_data,
 			});			
 	
-			var speciesPhoto = Ti.UI.createView({
+			var speciesPhoto = Ti.UI.createImageView({
+				image: "ui/assets/camera-icon.png",
 				top: 10,
-				height: 50,
+				width: "100%",
 				backgroundColor: "yellow"
 			});			
-
+			
+			speciesPhoto.addEventListener("click", function(e){
+		      Ti.Media.switchCamera(Ti.Media.CAMERA_FRONT);
+		      Ti.Media.showCamera({
+		      //Titanium.Media.openPhotoGallery({
+	            success:function(event)
+	            {
+	              speciesPhoto.image = event.media;
+                                    
+                  var image = event.media.imageAsResized(event.media.width / 4, event.media.height / 4);
+              
+              		//Get the current time as a string for the name of image to save
+              		var currentDate = new Date();
+                    var imagename = currentDate.getTime()+".jpg";
+                    
+              		var f = Titanium.Filesystem.getFile(Titanium.Filesystem.applicationDataDirectory, imagename);
+              
+              		f.write(image);
+                    
+		            },
+		            cancel:function()
+		            {
+		            },
+		            error:function(error)
+		            {
+		              alert("Sorry, your device could not take a picture, please try again.");
+		            }
+        		});
+			});
 				
 			speciesNumber.add();
 	
@@ -323,7 +352,7 @@ for (var i = 0; i < tableData.length; i++) {
 				top: 10
 			});		
 			
-			speciesSave.addEventListener("click", function(e){
+			speciesSave.addEventListener("touchend", function(e){
 				Ti.App.fireEvent("newSpeciesAdded", {title: speciesName, count: speciesCount, injuries: speciesInjuryCode});
 				win1.close();
 			});				
@@ -339,7 +368,7 @@ for (var i = 0; i < tableData.length; i++) {
 	
 	row.add(label);
 	row.add(image);
-	row.add(button);
+	//row.add(button);
 	tbl_data.push(row);
 	}
 }

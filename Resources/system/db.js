@@ -7,36 +7,37 @@ exports.init = function(){
 														
 		db.execute('CREATE TABLE IF NOT EXISTS cache(id INTEGER PRIMARY KEY, \
 														data TEXT, \
-														procID TEXT,\
 														image TEXT);');
 
 		db.close();
 };
 
-exports.save = function(_callback, data, questions){
+exports.save = function(data){
 	var img = '';
 	var patient_image = null;
+	Ti.API.info("SAVE CALLED");
 
-	for (var j=0; j<(questions.length-1); j++){
-		Ti.API.info('questiontype:' + (j+1) + ":" +questions[j].questionType);
-		if ( questions[j].questionType == 'camera' ) {
-			if (data['q'+(j + 1)] != false) {
-				Ti.API.info(data['q'+(j + 1)]);
-				var img = data["q" + (j + 1)].replace(/['"]/g,'');
-				var patient_image = Titanium.Filesystem.getFile(Titanium.Filesystem.applicationDataDirectory, img);
-				patient_image = patient_image.read();
-			} else {
-				var img = '';
-				var patient_image = null;
-			}
-		} 
-	} 
+	// for (var j=0; j<(questions.length-1); j++){
+		// Ti.API.info('questiontype:' + (j+1) + ":" +questions[j].questionType);
+		// if ( questions[j].questionType == 'camera' ) {
+			// if (data['q'+(j + 1)] != false) {
+				// Ti.API.info(data['q'+(j + 1)]);
+				// var img = data["q" + (j + 1)].replace(/['"]/g,'');
+				// var patient_image = Titanium.Filesystem.getFile(Titanium.Filesystem.applicationDataDirectory, img);
+				// patient_image = patient_image.read();
+			// } else {
+				// var img = '';
+				// var patient_image = null;
+			// }
+		// } 
+	// } 
 
 	data.created_at = Math.round((new Date()).getTime() / 1000);
 	// data.procedure_id = Ti.App.Properties.getString('procedure');
 	
 	 
 	if(Titanium.Network.networkType != Titanium.Network.NETWORK_NONE){
+		Ti.API.info("HAS CONNECTION");
 		var db = Ti.Database.open('app');
 		db.execute('INSERT INTO tracker (created_at, \
 											data) VALUES (?, ?)', 
@@ -49,43 +50,70 @@ exports.save = function(_callback, data, questions){
 		         //if(_callback) {
 		          //  _callback(this);
 		        //}
+		        alert("SENT SUCCESFULLY");
 		     },
 		     onerror : function(e) {
 		     	//Ti.API.info(JSON.stringify(e));
-		     	if(_callback) {
+		     	alert("ERROR IN SENDING");
 		     		//alert("Could not sync your tracker.");
 		            var tmp_data = JSON.stringify(data);
 					//var patient_image = Titanium.Filesystem.getFile(Titanium.Filesystem.applicationDataDirectory, data[7].question.replace(/['"]/g,''));
 					var db = Ti.Database.open('app');
 					
 					if(patient_image == null){
-						db.execute("INSERT INTO cache(action, token, data) VALUES('tracker', '" + token + "', '" + tmp_data + "')");
+						db.execute("INSERT INTO cache(data) VALUES('tracker', '" + tmp_data + "')");
 					}else{
-						db.execute("INSERT INTO cache(action, token, data, image) VALUES('tracker', '" + token + "', '" + tmp_data + "', '" + img + "')");
+						db.execute("INSERT INTO cache(data, image) VALUES('tracker', '" + tmp_data + "', '" + img + "')");
 					}
 					db.close();
-					 //if(_callback) {
-			          //  _callback(true);
-			        //}
-		        }
 		     },
 		     timeout : 10000
 		 });
-		 client.setRequestHeader("enctype", "multipart/form-data");
-		 client.open("POST", Ti.App.Properties.getString("route")+"/api/v4/tracker");
-		 		 
-		 if(patient_image == null){
-		 	var params = {
-				"token": token,
-			 	"data": JSON.stringify(data)
-			 };
-		 }else{
-		 	var params = {
-				"token": token,
-				"data": JSON.stringify(data),
-				"image": patient_image
-			 };
-		 }
+		client.setRequestHeader("Content-Type", "application/json");
+		client.open("POST", "https://docs.google.com/forms/d/1QGn0H7dhm5ZComHGiF-f4tAcWftWxL9R77W_pnJbZPQ/formResponse");
+
+				var accountData = Ti.App.Properties.getObject("accountData");
+				var params = "entry.704012813="+data.first_name;
+				params += ("&"+"entry.1256129758="+data.last_name);
+				// params += ("&"+"entry.242675736="+data.middle_name);
+				params += ("&"+"entry.439413146="+data.street_address);
+				params += ("&"+"entry.698332735="+data.city);
+				params += ("&"+"entry.769944760="+data.state);
+				params += ("&"+"entry.1202321178="+data.zip_code);
+				params += ("&"+"entry.1797685335="+data.vessel_name);
+				params += ("&"+"entry.1132934840="+data.coast_guard_id);
+				params += ("&"+"entry.2119389093="+data.state_id);
+				params += ("&"+"entry.1605714745="+data.fishery_ID);
+				params += ("&"+"entry.1528096846="+data.fish_gear_type);
+				// params += ("&"+"entry.1911269000="+data.date);
+				// params += ("&"+"entry.2005118167="+data.time);
+				params += ("&"+"entry.1531891437="+data.latitude);
+				params += ("&"+"entry.483701292="+data.longitude);
+				params += ("&"+"entry.466829699="+data.general_location);
+				// params += ("&"+"entry.1015028783="+data.incident_type);
+				params += ("&"+"entry.1652214620="+data.species_codes);
+// 				
+				// //incident problems
+				for (var i =0; i<data.injury_codes.length; i++){
+					params += ("&"+"entry.873654792="+data.injury_codes[i] );
+				}
+// 				
+				params += ("&"+"entry.2059397053="+data.number);
+				
+				Ti.API.info(params);		
+						 		 
+		 // if(patient_image == null){
+		 	// var params = {
+				// "token": token,
+			 	// "data": JSON.stringify(data)
+			 // };
+		 // }else{
+		 	// var params = {
+				// "token": token,
+				// "data": JSON.stringify(data),
+				// "image": patient_image
+			 // };
+		 // }
 		 client.send(params);
 	}else{
 		// Cache POST request until internet is detected
@@ -95,25 +123,38 @@ exports.save = function(_callback, data, questions){
 											Math.round((new Date()).getTime() / 1000).toFixed(0),
 											JSON.stringify(data));
 		db.close();
-		//var token = Ti.App.Properties.getString('token');
-		//var tmp_data = '{"created_at":' + Math.round((new Date()).getTime() / 1000) + ', "q1":' + data.q1 + ', "q2":' + data.q2 + ', "q3":' + data.q3 + ', "q4":' + data.q4 + ', "q5":' + data.q5 + ', "q6":' + data.q6 + ', "q7":' + data.q7 + ', "q9":' + data.q9 + ', "q10":' + data.q10 + ', "q11":' + data.q11 + '}';
 		var tmp_data = JSON.stringify(data);
 		//var patient_image = Titanium.Filesystem.getFile(Titanium.Filesystem.applicationDataDirectory, data[7].question.replace(/['"]/g,''));
 		var db = Ti.Database.open('app');
 		
 		if(patient_image == null){
-			db.execute("INSERT INTO cache(action, token, data) VALUES('tracker', '" + token + "', '" + tmp_data + "')");
+			db.execute("INSERT INTO cache(data) VALUES('tracker', '" + tmp_data + "')");
 		}else{
-			db.execute("INSERT INTO cache(action, token, data, image) VALUES('tracker', '" + token + "', '" + tmp_data + "', '" + img + "')");
+			db.execute("INSERT INTO cache(data, image) VALUES('tracker', '"  + tmp_data + "', '" + img + "')");
 		}
 		db.close();
 		// if(_callback) {
          //   _callback(true);
         //}
 	}
-	if(_callback) {
-        _callback(true);
-    }
+};
+
+exports.show = function(){
+	var logData = [];
+	var db = Ti.Database.open('app');
+	var logs = db.execute('SELECT * FROM tracker');
+	while(logs.isValidRow()){
+		data = logs.fieldByName('data');
+		data = JSON.parse(data);
+		logData.push(data);
+		logs.next();
+	};
+	
+	db.close();
+// 	
+	Ti.API.info(logData);
+// 	
+	return logData;
 };
 
 exports.cache = function(_callback){
@@ -138,8 +179,8 @@ exports.cache = function(_callback){
 				     },
 				     timeout : 10000
 				 });
-				 client.setRequestHeader("enctype", "multipart/form-data");
-				 client.open("POST", Ti.App.Properties.getString("route")+"/api/v4/tracker");
+		client.setRequestHeader("Content-Type", "application/json");
+		client.open("POST", "https://docs.google.com/forms/d/1QGn0H7dhm5ZComHGiF-f4tAcWftWxL9R77W_pnJbZPQ/formResponse");
 				 if(cache.fieldByName('image') == null){
 				 	var params = {
 						"token": cache.fieldByName('token'),

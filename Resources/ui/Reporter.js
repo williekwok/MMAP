@@ -1,7 +1,17 @@
 function Reporter() {
+	var reportData = Ti.App.Properties.getObject("accountData");
+	Ti.API.info(reportData);
+
+	var incidentData = {
+		latitude : "latitude",
+		longitude : "latitude",
+		date : "",
+		time : "",
+		general_location : "",
+		incident_type : ""
+	};	
 	
-	var reportData = Ti.App.Properties.getObject("userdata");
-	
+	var animalData = [];
 	
 	var ReporterWindow = Ti.UI.createWindow({
 		title:'Reporter',
@@ -39,10 +49,7 @@ function Reporter() {
 		top: 10
 	});
 	
-
-	
 	Ti.App.addEventListener("newSpeciesAdded", function(e){
-		//alert("I HAPPENED");
 		Ti.API.info(e);
 		Ti.API.info(e.injuries);
 		
@@ -82,8 +89,21 @@ function Reporter() {
 			newSpeciesElement.add(newSpeciesInjuries);
 		}
 		
-
+		newSpeciesDivider = Ti.UI.createView({
+			height: 5,
+			backgroundColor: "#fff",
+			width: "100%"
+		});
+		newSpeciesElement.add(newSpeciesDivider);
 		addedSpeciesList.add(newSpeciesElement);
+		
+		speciesData = {
+			species_codes: e.title,
+			injury_codes:  e.injuries,
+			number: e.count
+		};
+		
+		animalData.push(speciesData);
 	});
 	
 	ReporterView2.add(SpeciesInstructions);
@@ -120,8 +140,10 @@ function Reporter() {
 	var NavBarLabel = Ti.UI.createLabel({
 		top: 32.5,
 		right: 10,
-		width: 50,
+		width: 70,
+		font: {fontSize:20,fontFamily:'Helvetica Neue', fontWeight: 'bold'}, 
 		text: "Next",
+		textAlign: "right",
 		color: "#fff"
 	});	
 
@@ -129,6 +151,7 @@ function Reporter() {
 		top: 32.5,
 		width: 100,
 		text: "Step 1",
+		font: {fontSize:20,fontFamily:'Helvetica Neue', fontWeight: 'bold'}, 
 		textAlign: "center",
 		color: "#fff"
 	});	
@@ -136,8 +159,10 @@ function Reporter() {
 	var NavBarClose = Ti.UI.createLabel({
 		top: 32.5,
 		left: 10,
-		width: 50,
+		width: 70,
+		font: {fontSize:20,fontFamily:'Helvetica Neue', fontWeight: 'bold'}, 
 		text: "Close",
+		textAlign: "left",
 		color: "#fff"
 	});		
 	ReporterWindow.add(ReporterNavBar);
@@ -154,6 +179,8 @@ function Reporter() {
 			NavBarClose.text = "Back";
 			scrollableView.moveNext();
 		
+		} else if (e.source.text == "Send"){
+			submitData();
 		}
 	});
 	
@@ -169,6 +196,13 @@ function Reporter() {
 		}
 	});	
 		
+		
+	var incidentLabel = Ti.UI.createLabel({
+		text: "Pick Incident Type",
+		top: 15
+	});
+	
+	ReporterView1.add(incidentLabel);
 
 	var bb1 = Titanium.UI.iOS.createTabbedBar({
 	    labels:['Incidental', 'Intentional'],
@@ -184,10 +218,12 @@ function Reporter() {
 	  type:Ti.UI.PICKER_TYPE_DATE,
 	  minDate:new Date(2009,0,1),
 	  maxDate:new Date(2014,11,31),
-	  value:new Date(2014,3,12),
+	  value:new Date(),
 	  bottom: 0,
 	  visible: false
 	});
+	
+	incidentData.date = picker.value;
 
 	var dateButton = Ti.UI.createLabel({
 		text: picker.value,
@@ -250,11 +286,10 @@ Titanium.Geolocation.getCurrentPosition(function(e)
     myid:1 // Custom property to uniquely identify this annotation.
 });
 	
-	mapData = {
-		"latitude" : latitude,
-		"latitude" : longitude
-	};
-
+	
+	incidentData.latitude = latitude;
+	incidentData.longitude = longitude;
+	
 	var mapview = Map.createView({
         mapType: Map.NORMAL_TYPE,
         region: {latitude: latitude, longitude: longitude, latitudeDelta:0.01, longitudeDelta:0.01},
@@ -266,12 +301,32 @@ Titanium.Geolocation.getCurrentPosition(function(e)
         height: "50%"
     });
     
- 	Ti.API.info("Latitude is: "+ latitude);
- 	Ti.API.info("Longtitude is: "+ longitude);
- 	locationArea.text = "Latitude is: "+ latitude + ", " + "Longtitude is: "+ longitude;
+ 	Ti.API.info("Latitude: "+ latitude);
+ 	Ti.API.info("Longtitude: "+ longitude);
+ 	locationArea.text = "Latitude: "+ latitude + "  " + "Longtitude: "+ longitude;
     ReporterView1.add(mapview);
 });	
 	
+	submitData = function(e){
+		
+		if (animalData.length > 0){
+			db = require('system/db');
+			alert("data submitting");
+			specificAnimal = animalData[0];
+			//put together data
+			var combinedData={};
+			for(var _obj in reportData) combinedData[_obj ]=reportData[_obj];
+			for(var _obj in incidentData) combinedData[_obj ]=incidentData[_obj];
+			for(var _obj in specificAnimal) combinedData[_obj ]=specificAnimal[_obj];
+			
+			Ti.API.info(combinedData);
+			
+			db.save(combinedData);
+			//validate Data first
+		} else {
+			alert("No animal reported yet!");
+		}
+	};
 
 	//Species Choice	
 
