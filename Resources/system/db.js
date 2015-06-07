@@ -50,7 +50,7 @@ exports.save = function(data){
 		         //if(_callback) {
 		          //  _callback(this);
 		        //}
-		        alert("SENT SUCCESFULLY");
+		        alert("Your Form was sent succesfully!");
 		     },
 		     onerror : function(e) {
 		     	//Ti.API.info(JSON.stringify(e));

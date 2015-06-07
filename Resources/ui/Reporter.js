@@ -64,18 +64,27 @@ function Reporter() {
 			layout: "vertical"
 		});
 		
+		var newSpeciesImage = Ti.UI.createImageView({
+				image: "ui/assets/"+ e.image,
+				width: 70,
+				height: 70,
+				borderRadius: 35,
+				top: 10
+		});
+		
 		newSpeciesTitle = Ti.UI.createLabel({
 			text: e.title,
+			font: {fontSize:16,fontFamily:'Helvetica Neue', fontWeight: 'bold'},
 			height: 50,
 			top: 0
 		});
 
 		newSpeciesCounter = Ti.UI.createLabel({
-			text: "number: " + e.count,
-			height: 50,
+			text: "Number involved: " + e.count,
 			top: 0
 		});
 		
+		newSpeciesElement.add(newSpeciesImage);
 		newSpeciesElement.add(newSpeciesTitle);
 		newSpeciesElement.add(newSpeciesCounter);
 		var codeText = "";
@@ -151,7 +160,7 @@ function Reporter() {
 		top: 32.5,
 		width: 100,
 		text: "Step 1",
-		font: {fontSize:20,fontFamily:'Helvetica Neue', fontWeight: 'bold'}, 
+		font: {fontSize:18,fontFamily:'Helvetica Neue', fontWeight: 'bold'}, 
 		textAlign: "center",
 		color: "#fff"
 	});	
@@ -160,7 +169,7 @@ function Reporter() {
 		top: 32.5,
 		left: 10,
 		width: 70,
-		font: {fontSize:20,fontFamily:'Helvetica Neue', fontWeight: 'bold'}, 
+		font: {fontSize:18,fontFamily:'Helvetica Neue'}, 
 		text: "Close",
 		textAlign: "left",
 		color: "#fff"
@@ -311,7 +320,7 @@ Titanium.Geolocation.getCurrentPosition(function(e)
 		
 		if (animalData.length > 0){
 			db = require('system/db');
-			alert("data submitting");
+			//alert("data submitting");
 			specificAnimal = animalData[0];
 			//put together data
 			var combinedData={};
@@ -323,6 +332,7 @@ Titanium.Geolocation.getCurrentPosition(function(e)
 			
 			db.save(combinedData);
 			//validate Data first
+			ReporterWindow.close();
 		} else {
 			alert("No animal reported yet!");
 		}

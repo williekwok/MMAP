@@ -29,22 +29,36 @@ function Setup() {
 	
 	
 	var setupView1 = Titanium.UI.createScrollView({
-		
+		height: Ti.UI.SIZE
 	});
 
 	var setupView2 = Titanium.UI.createScrollView({
-		
+		height: Ti.UI.SIZE
 	});	
 	
-	
+
+	var setupHeaderText1 = Ti.UI.createLabel({
+		text: "Get Started",
+		font: {fontSize:22,fontFamily:'Helvetica Neue', fontWeight: 'bold'},
+		top: 50,
+		width: "90%",
+		textAlign: "center"
+	});	
+		
 	var setupHeaderText = Ti.UI.createLabel({
-		text: "Thanks for using the Marine Mammal Authorization Program Incident Reporting App. To start please input some information about yourself. This will make reporting much easier and faster for you!",
-		top: 50
+		text: "Thanks for using the MMAP Incident Reporting App! Please answer some information about yourself. This will make reporting much easier and faster for you!",
+		font: {fontSize:14,fontFamily:'Helvetica Neue', fontWeight: 'light'},
+		top: 90,
+		width: "90%",
+		textAlign: "center"
 	});	
 
 	var setupHeaderText2 = Ti.UI.createLabel({
-		text: "Please provide some information about your vessel.",
-		top: 50
+		text: "Vessel information",
+		font: {fontSize:22,fontFamily:'Helvetica Neue', fontWeight: 'bold'},
+		top: 50,
+		width: "90%",
+		textAlign: "center"
 	});	
 	
 	var setupFieldView = Ti.UI.createView({
@@ -58,8 +72,11 @@ function Setup() {
 	var VesselNameField = Ti.UI.createTextField({
 		hintText : "Vessel Name",
 		value: accountData.vessel_name,
+		borderColor: "#f0f0f0",
+		height: 50,
+		paddingLeft: 10,
 		top: 0,
-		width: "50%"
+		width: "90%"
 	});	
 	
 
@@ -67,28 +84,40 @@ function Setup() {
 		hintText : "Coast Guard DOC. No. or Vessel State Reg. No.",
 		top: 50,
 		value: accountData.coast_guard_id,
-		width: "50%"
+		borderColor: "#f0f0f0",
+		height: 50,
+		paddingLeft: 10,
+		width: "90%"
 	});	
 	
 	var StateNumField = Ti.UI.createTextField({
 		hintText : "State Commerical Vessel No.",
 		top: 100,
 		value: accountData.state_id,
-		width: "50%"
+		width: "90%",
+		borderColor: "#f0f0f0",
+		paddingLeft: 10,
+		height: 50,
 	});	
 
 	var IDField = Ti.UI.createTextField({
 		hintText : "Fishery I.D. No.",
 		value: accountData.fishery_ID,
 		top: 150,
-		width: "50%"
+		width: "90%",
+		borderColor: "#f0f0f0",
+		paddingLeft: 10,
+		height: 50,
 	});	
 	
 	var GearField = Ti.UI.createTextField({
 		hintText : "Fishery gear type and target species",
 		value: accountData.fish_gear_type,
 		top: 200,
-		width: "50%"
+		width: "90%",
+		paddingLeft: 10,
+		borderColor: "#f0f0f0",
+		height: 50,
 	});	
 	
 	//Other settings
@@ -96,67 +125,91 @@ function Setup() {
 	var FirstNameField = Ti.UI.createTextField({
 		hintText : "First Name",
 		value: accountData.first_name,
+		borderColor: "#f0f0f0",
+		paddingLeft: 10,
 		top: 0,
-		left: 0,
-		width: "50%"
+		left: "5%",
+		height: 50,
+		width: "45%"
 	});	
-
+	
+	FirstNameField.addEventListener('focus', function(){
+    	setupView1.scrollTo(0, 200);  
+	});
+	
 	var LastNameField = Ti.UI.createTextField({
 		hintText: "Last Name",
 		value: accountData.last_name,
+		borderColor: "#f0f0f0",
 		top: 0,
-		right: 0,
-		width: "50%"
+		paddingLeft: 10,
+		height: 50,
+		right: "5%",
+		width: "45%"
 	});	
 	
 	var StreetNameField = Ti.UI.createTextField({
 		hintText: "Mailing address - Street",
 		value: accountData.street_address,
+		borderColor: "#f0f0f0",
+		paddingLeft: 10,
 		top: 50,
-		width: "100%"
+		height: 50,
+		width: "90%"
 	});	
 
 	var CityNameField = Ti.UI.createTextField({
 		hintText : "City",
 		value: accountData.city,
 		top: 100,
-		left: 0,
-		width: "33%"
-	});	
+		borderColor: "#f0f0f0",
+		paddingLeft: 10,
+		height: 50,
+		left: "5%",
+		width: "45%"	});	
 
 	var StateNameField = Ti.UI.createTextField({
 		hintText: "State",
 		value: accountData.state,
 		top: 100,
-		right: 0,
-		width: "33%"
+		borderColor: "#f0f0f0",
+		paddingLeft: 10,
+		height: 50,
+		right: "5%",
+		width: "45%"
 	});	
 
 	var ZipField = Ti.UI.createTextField({
 		hintText: "7-Zip Code",
 		value: accountData.zip_code,
-		top: 150,
-		width: "100%"
+		borderColor: "#f0f0f0",
+		width: "90%",
+		paddingLeft: 10,
+		height: 50,
+		top: 150
 	});	
 	
 	var continueButton = Ti.UI.createButton({
 		title: "Continue",
-		width: "80%",
+		borderColor: "#f0f0f0",
+		width: "90%",
 		backgroundColor: "#1abc9c",
 		color: "white",
 		height: 50,
 		borderRadius: 5,
-		bottom: 50
+		font: {fontFamily:'Helvetica Neue', fontWeight: 'bold'},
+		bottom: 25
 	});
 
 	var completeButton = Ti.UI.createButton({
 		title: "Complete",
-		width: "80%",
+		width: "90%",
 		backgroundColor: "#1abc9c",
 		color: "white",
 		height: 50,
 		borderRadius: 5,
-		bottom: 50
+		font: {fontFamily:'Helvetica Neue', fontWeight: 'bold'},
+		bottom: 25
 	});	
 
 	
@@ -212,6 +265,7 @@ function Setup() {
 		
 	setupWindow.add(scrollableView);
 	setupView1.add(setupHeaderText);
+	setupView1.add(setupHeaderText1);
 	setupView1.add(setupFieldView);
 	setupView2.add(setupHeaderText2);
 	setupView2.add(setupFieldView2);

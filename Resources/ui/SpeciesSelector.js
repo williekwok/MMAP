@@ -188,6 +188,7 @@ for (var i = 0; i < tableData.length; i++) {
 				title: e.row.data.title
 			};
 			var speciesName = e.row.data.title;
+			var speciesImageAsset = e.row.data.image;
 			var speciesCount = 0;
 			var speciesInjuryCode = [];
 			
@@ -215,16 +216,24 @@ for (var i = 0; i < tableData.length; i++) {
 			
 			var speciesNumberText = Ti.UI.createLabel({
 				top: 0,
+				height: 20,
+				font: {fontSize:16,fontFamily:'Helvetica Neue', fontWeight: 'bold'},
+				textAlign: "center",
 				text: "Number of animals involved"
 			});
 			
 			speciesNumber.add(speciesNumberText);
 
 			var speciesCountLabel = Ti.UI.createLabel({
-				top: 20,
+				top: 25,
+				font: {fontSize:32,fontFamily:'Helvetica Neue', fontWeight: 'bold'},
+				color: "#3498db",
+				backgroundColor: "#ecf0f1",
 				text: speciesCount,
-				width: 50,
-				height: 25,
+				borderColor: "#f0f0f0",
+				textAlign: "center",
+				width: 100,
+				height: 60,
 			});
 			
 			
@@ -233,10 +242,12 @@ for (var i = 0; i < tableData.length; i++) {
 
 			var speciesCountAdd = Ti.UI.createLabel({
 				text: "+",
-				top: 20,
-				height: 25,
-				width: 50,
+				font: {fontSize:32,fontFamily:'Helvetica Neue', fontWeight: 'bold'},
+				top: 25,
+				height: 60,
+				width: 100,
 				right: 0,
+				textAlign: "center",
 				backgroundColor: "#f0f0f0"
 			});				
 			
@@ -247,10 +258,12 @@ for (var i = 0; i < tableData.length; i++) {
 
 			var speciesCountMinus = Ti.UI.createLabel({
 				text: "-",
-				top: 20,
-				height: 25,
-				width: 50,
+				font: {fontSize:32,fontFamily:'Helvetica Neue', fontWeight: 'bold'},
+				top: 25,
+				height: 60,
+				width: 100,
 				left: 0,
+				textAlign: "center",
 				backgroundColor: "#f0f0f0"
 			});			
 
@@ -266,7 +279,9 @@ for (var i = 0; i < tableData.length; i++) {
 
 			var speciesInjuryText = Ti.UI.createLabel({
 				top: 10,
-				text: "Enter type of mortality/injury code (up to 3) "
+				font: {fontSize:16,fontFamily:'Helvetica Neue', fontWeight: 'bold'},
+				textAlign: "center",
+				text: "Enter type of mortality/injury (up to 3) "
 			});			
 			
 			var injury_data = [];
@@ -309,7 +324,7 @@ for (var i = 0; i < tableData.length; i++) {
 				image: "ui/assets/camera-icon.png",
 				top: 10,
 				width: "100%",
-				backgroundColor: "yellow"
+				backgroundColor: "#95a5a6"
 			});			
 			
 			speciesPhoto.addEventListener("click", function(e){
@@ -353,7 +368,7 @@ for (var i = 0; i < tableData.length; i++) {
 			});		
 			
 			speciesSave.addEventListener("touchend", function(e){
-				Ti.App.fireEvent("newSpeciesAdded", {title: speciesName, count: speciesCount, injuries: speciesInjuryCode});
+				Ti.App.fireEvent("newSpeciesAdded", {title: speciesName, count: speciesCount, injuries: speciesInjuryCode, image: speciesImageAsset});
 				win1.close();
 			});				
 			speciesView.add(speciesImage);	

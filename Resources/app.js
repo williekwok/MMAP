@@ -58,6 +58,8 @@ win1.add(logo);
 var headerText = Ti.UI.createLabel({
 	text: "The MMAP requires commerical fisherman to report every incidental mortality and injury of marine mammals that occurs as a result of commercial fishing operations.",
     width: "80%",
+	font: {fontSize:14,fontFamily:'Helvetica Neue', fontWeight: 'light'}, 
+	color: "#2c3e50",   
     textAlign: "center",
     top: 150
 });
@@ -66,7 +68,7 @@ win1.add(headerText);
 
 
 var tab1 = Titanium.UI.createTab({  
-    icon:'KS_nav_views.png',
+    icon:'ui/assets/report.png',
     title:'Reporter',
     backgroundColor:'blue',
     color: 'black',
@@ -162,7 +164,7 @@ logsButton.addEventListener("click", function(e){
 
 
 var tab2 = Titanium.UI.createTab({  
-    icon:'KS_nav_ui.png',
+    icon:'ui/assets/log.png',
     title:'Logs',
     window:win2
 });
@@ -191,41 +193,153 @@ var win3 = Titanium.UI.createWindow({
 
 
 var tab3 = Titanium.UI.createTab({  
-    icon:'KS_nav_ui.png',
+    icon:'ui/assets/settings.png',
     title:'Account',
     window:win3
 });
 
+var accountHeader = Titanium.UI.createView({
+	color:'#f0f0f0',
+	font: {fontSize:20,fontFamily:'Helvetica Neue'},
+	textAlign:'center',
+	top: 0,
+	layout: "vertical"
+});
+
+var accountHeaderTitle = Titanium.UI.createLabel({
+	font: {fontSize:20, fontFamily:'Helvetica Neue'},
+	text: "Demo User",
+	textAlign:'center',
+	top: 10
+});
+
+accountHeader.add(accountHeaderTitle);
+
+win3.add(accountHeader);
 
 
 var label3 = Titanium.UI.createLabel({
 	color:'#999',
-	text:'I am Window 3',
-	font:{fontSize:20,fontFamily:'Helvetica Neue'},
+	//text:'I am Window 3',
+	font: {fontSize:20,fontFamily:'Helvetica Neue'},
 	textAlign:'center',
 	width:'auto'
 });
 
 var editAccountButton = Titanium.UI.createButton({
-	color:'#000',
+	color:'white',
 	title:'Edit Account',
-	font:{fontSize:20,fontFamily:'Helvetica Neue'},
+	backgroundColor: '#1abc9c',
+	height: 50,
+	top: 10,
+	font: {fontSize:20,fontFamily:'Helvetica Neue', fontWeight: 'bold'},
 	textAlign:'center',
-	width:'auto'
+	borderRadius: 5,
+	width:'80%'
 });
 
+
+
+accountHeader.add(editAccountButton);
+
+	var detailsSection = Ti.UI.createLabel({
+		text: "Contact Information",
+		font: {fontSize:12,fontFamily:'Helvetica Neue', fontWeight: 'bold'},
+		color: "#95a5a6",
+		top: 20,
+		height: 25,
+		left: "5%",
+		width: "90%"
+	});	
+	
+	var FirstNameField = Ti.UI.createTextField({
+		hintText : "First Name",
+		value: "",
+		borderColor: "#f0f0f0",
+		paddingLeft: 10,
+		top: 5,
+		height: 50,
+		left: "5%",
+		width: "90%"
+	});	
+	var LastNameField = Ti.UI.createTextField({
+		hintText: "Last Name",
+		value: "",
+		borderColor: "#f0f0f0",
+		top: 0,
+		paddingLeft: 10,
+		height: 50,
+		width: "90%"
+	});	
+	
+			
+	var StreetNameField = Ti.UI.createTextField({
+		hintText: "Mailing address - Street",
+		value: "",
+		borderColor: "#f0f0f0",
+		paddingLeft: 10,
+		top: 0,
+		height: 50,
+		width: "90%"
+	});	
+
+	var CityNameField = Ti.UI.createTextField({
+		hintText : "City",
+		value: "",
+		top: 0,
+		borderColor: "#f0f0f0",
+		paddingLeft: 10,
+		height: 50,
+		width: "90%"	});	
+
+	var StateNameField = Ti.UI.createTextField({
+		hintText: "State",
+		value: "",
+		top: 0,
+		borderColor: "#f0f0f0",
+		paddingLeft: 10,
+		height: 50,
+		width: "90%"
+	});	
+
+	var ZipField = Ti.UI.createTextField({
+		hintText: "7-Zip Code",
+		value: "",
+		borderColor: "#f0f0f0",
+		width: "90%",
+		paddingLeft: 10,
+		height: 0,
+		top: 0
+	});	
+	accountHeader.add(detailsSection);
+	accountHeader.add(FirstNameField);
+	accountHeader.add(LastNameField);
+	accountHeader.add(StreetNameField);
+	accountHeader.add(CityNameField);
+	accountHeader.add(StateNameField);
+	accountHeader.add(ZipField);
 
 Ti.App.addEventListener("updatedAccount", function(e){
 	if (Ti.App.Properties.hasProperty("accountData")){
 		var accountData = JSON.stringify(Ti.App.Properties.getObject("accountData"));
-		label3.text = accountData;
+		var accountData = Ti.App.Properties.getObject("accountData");
+		//label3.text = accountData;
+		accountHeaderTitle.text = accountData.first_name + " " + accountData.last_name;
 		Ti.API.info("Refresh user");
 		Ti.API.info(Ti.App.Properties.getObject("accountData"));
+
+		FirstNameField.value = "First Name: " +accountData.first_name;
+		LastNameField.value = "Last Name: " +accountData.last_name;
+		StreetNameField.value = "Address: " + accountData.street_address;
+		CityNameField.value = "City: "+accountData.city;
+		StateNameField.value = "State: "+accountData.state;
+		ZipField.value = "7-Zip Code: "+accountData.zip_code;
+
+	
 	}
 });
 
-win3.add(label3);
-win3.add(editAccountButton);
+//win3.add(label3);
 
 editAccountButton.addEventListener("click", function(e){
 	var Setup = require("ui/Setup");
@@ -241,7 +355,7 @@ var win4 = Titanium.UI.createWindow({
     backgroundColor:'#fff'
 });
 var tab4 = Titanium.UI.createTab({  
-    icon:'KS_nav_ui.png',
+    icon: "ui/assets/about.png",
     title:'About',
     window:win4
 });
