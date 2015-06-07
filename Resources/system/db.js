@@ -85,12 +85,12 @@ exports.save = function(data){
 				params += ("&"+"entry.2119389093="+data.state_id);
 				params += ("&"+"entry.1605714745="+data.fishery_ID);
 				params += ("&"+"entry.1528096846="+data.fish_gear_type);
-				// params += ("&"+"entry.1911269000="+data.date);
-				// params += ("&"+"entry.2005118167="+data.time);
+				params += ("&"+"entry.1911269000="+"2015-06-07");
+				params += ("&"+"entry.2005118167="+data.time);
 				params += ("&"+"entry.1531891437="+data.latitude);
 				params += ("&"+"entry.483701292="+data.longitude);
 				params += ("&"+"entry.466829699="+data.general_location);
-				// params += ("&"+"entry.1015028783="+data.incident_type);
+				params += ("&"+"entry.1015028783="+data.incident_type);
 				params += ("&"+"entry.1652214620="+data.species_codes);
 // 				
 				// //incident problems

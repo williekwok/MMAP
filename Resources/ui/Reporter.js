@@ -98,12 +98,20 @@ function Reporter() {
 			newSpeciesElement.add(newSpeciesInjuries);
 		}
 		
-		newSpeciesDivider = Ti.UI.createView({
+		newSpeciesDivider1 = Ti.UI.createView({
+			height: 10,
+			backgroundColor: "#f0f0f0",
+			width: "100%"
+		});
+
+		newSpeciesDivider2 = Ti.UI.createView({
 			height: 5,
 			backgroundColor: "#fff",
 			width: "100%"
 		});
-		newSpeciesElement.add(newSpeciesDivider);
+		newSpeciesElement.add(newSpeciesDivider1);
+		newSpeciesElement.add(newSpeciesDivider2);
+
 		addedSpeciesList.add(newSpeciesElement);
 		
 		speciesData = {
@@ -208,10 +216,21 @@ function Reporter() {
 		
 	var incidentLabel = Ti.UI.createLabel({
 		text: "Pick Incident Type",
+		font: {fontSize:16,fontFamily:'Helvetica Neue', fontWeight: 'bold'},
+		
 		top: 15
 	});
 	
 	ReporterView1.add(incidentLabel);
+	
+	var dateLabel = Ti.UI.createLabel({
+		text: "Date, time, location",
+		font: {fontSize:16,fontFamily:'Helvetica Neue', fontWeight: 'bold'},
+		top: 110
+	});
+	
+	ReporterView1.add(incidentLabel);
+	ReporterView1.add(dateLabel);
 
 	var bb1 = Titanium.UI.iOS.createTabbedBar({
 	    labels:['Incidental', 'Intentional'],
@@ -222,6 +241,16 @@ function Reporter() {
 	    width:200
 	});
 	ReporterView1.add(bb1);
+	
+	bb1.addEventListener("click", function(e){
+		Ti.API.info(e.source.getIndex());
+		var index = e.source.getIndex();
+		if (index  == 0){
+			incidentData.incident_type = "Incidental";
+		}else if (index  == 1){
+			incidentData.incident_type = "Intentional";
+		}
+	});
 
 	var picker = Ti.UI.createPicker({
 	  type:Ti.UI.PICKER_TYPE_DATE,
@@ -233,10 +262,11 @@ function Reporter() {
 	});
 	
 	incidentData.date = picker.value;
+	incidentData.time = picker.value;
 
 	var dateButton = Ti.UI.createLabel({
 		text: picker.value,
-		top: 100
+		top: 140
 	}); 
 	
 	ReporterView1.add(dateButton);
@@ -245,7 +275,8 @@ function Reporter() {
 	
 	var locationArea = Ti.UI.createLabel({
 		text: Ti.Geolocation.getCurrentPosition.coords,
-		top: 150
+		top: 165,
+		textAlign: "center"
 	});
 	Ti.API.info(Ti.Geolocation.getCurrentPosition.coords);
 	ReporterView1.add(locationArea);
@@ -321,6 +352,17 @@ Titanium.Geolocation.getCurrentPosition(function(e)
 		if (animalData.length > 0){
 			db = require('system/db');
 			//alert("data submitting");
+			var dateRaw = incidentData.date;
+			dateString = (dateRaw.getFullYear() + "-" + (dateRaw.getMonth() + 1) + "-" + dateRaw.getDate());
+			timeString = dateRaw.getHours() + ":" + dateRaw.getMinutes() ;
+			
+			Ti.API.info("Time String");
+			Ti.API.info(dateString);
+			Ti.API.info(timeString);
+			
+			incidentData.date = dateString;
+			incidentData.time = timeString;
+			
 			specificAnimal = animalData[0];
 			//put together data
 			var combinedData={};
