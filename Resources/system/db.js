@@ -92,16 +92,122 @@ exports.save = function(data){
 				params += ("&"+"entry.466829699="+data.general_location);
 				params += ("&"+"entry.1015028783="+data.incident_type);
 				params += ("&"+"entry.1652214620="+data.species_codes);
+				
+				var html_data ="<p>New MMAP Report submitted:</p>";
+			    html_data = "First Name: "+data.first_name + "<br>";
+				html_data += ("Last Name"+data.last_name+ "<br>");
+				// params += ("&"+"entry.242675736="+data.middle_name);
+				html_data += ("Street Address: "+data.street_address+ "<br>");
+				html_data += ("City: "+data.city+ "<br>");
+				html_data += ("State: "+data.state+ "<br>");
+				html_data += ("Zip code: "+data.zip_code+ "<br>");
+				html_data += ("Vessel name: "+data.vessel_name+ "<br>");
+				html_data += ("Coast guard: "+data.coast_guard_id+ "<br>");
+				html_data += ("State ID: "+data.state_id+ "<br>");
+				html_data += ("Fishery ID: "+data.fishery_ID+ "<br>");
+				html_data += ("Gear Type: "+data.fish_gear_type+ "<br>");
+				html_data += ("Date of incident: "+"2015-06-21"+ "<br>");
+				html_data += ("Time of incident: "+data.time+ "<br>");
+				html_data += ("Latitude: "+data.latitude+ "<br>");
+				html_data += ("Longitude: "+data.longitude+ "<br>");
+				html_data += ("General Location: "+data.general_location+ "<br>");
+				html_data += ("Incident Type: "+data.incident_type+ "<br>");
+				html_data += ("Species Code: "+data.species_codes+ "<br>");
 // 				
 				// //incident problems
 				for (var i =0; i<data.injury_codes.length; i++){
-					params += ("&"+"entry.873654792="+data.injury_codes[i] );
+					html_data += ("Species Injuries: "+data.injury_codes[i]+ "<br>" );
 				}
+				html_data += ("Number of species involved: "+data.number+ "<br>");
 // 				
 				params += ("&"+"entry.2059397053="+data.number);
 				
-				Ti.API.info(params);		
-						 		 
+				Ti.API.info(params);	
+				client.send(params);	
+				
+				var key = "Ya9vgwISVO7JWwssDM63xQ";
+    			var url = "https://mandrillapp.com/api/1.0/messages/send.json";
+	
+				var client2 = Ti.Network.createHTTPClient({
+					onload : function(e) {
+						Ti.API.info(e);
+					},
+					onerror : function(e) {
+						Ti.API.info("FAILED SEND");
+						Ti.API.info(e);
+						
+						Ti.API.debug(e.error);
+					},
+						 timeout : 100000  // in milliseconds
+					});
+	
+				var species_image = Titanium.Filesystem.getFile(Ti.Filesystem.resourcesDirectory, "ui/assets/sea_otter.png");
+				Ti.API.info("species_image");
+				Ti.API.info(species_image);
+				species_image = species_image.read();
+				Ti.API.info(species_image);		 
+			 	var imgStr = Ti.Utils.base64encode(species_image).toString();			 		 
+				var data = {
+				    'key': key,
+				    'message': {
+				      'from_email': 'williekckwok@gmail.com',
+				      'to': [{
+				            'email': 'biscuittwo@gmail.com',
+				            'name': 'MMAP',
+				            'type': 'to'
+				          }],
+				      'autotext': 'true',
+				      'subject': 'MMAP Incident Report',
+				      'html': html_data,
+				      "images": [
+				            {
+				                "type": "image/png",
+				                "name": "SPECIESIMAGE",
+				                "content": imgStr
+				            }
+				        ]
+				    }
+				 };
+				 
+				 if (Ti.App.Properties.hasProperty("currentSavedImage")){
+					imagename = Ti.App.Properties.getString("currentSavedImage");
+					var user_photo = Titanium.Filesystem.getFile(Titanium.Filesystem.applicationDataDirectory, imagename);
+					user_photo = user_photo.read();
+					var user_photo_string = Ti.Utils.base64encode(user_photo).toString();	
+					var data = {
+				    'key': key,
+				    'message': {
+				      'from_email': 'williekckwok@gmail.com',
+				      'to': [{
+				            'email': 'biscuittwo@gmail.com',
+				            'name': 'MMAP',
+				            'type': 'to'
+				          }],
+				      'autotext': 'true',
+				      'subject': 'MMAP Incident Report',
+				      'html': html_data,
+				      "images": [
+				            {
+				                "type": "image/png",
+				                "name": "SPECIESIMAGE",
+				                "content": imgStr
+				            },
+				            {
+				                "type": "image/jpg",
+				                "name": "USERTAKENIMAGE",
+				                "content": user_photo_string
+				            }
+				        ]
+				    }
+				 };				
+						
+				}
+				// Prepare the connection.
+				client2.setRequestHeader("Content-Type", "application/json");
+				client2.open("POST", url);
+				// Send the request.
+				client2.send(JSON.stringify(data));		
+				
 		 // if(patient_image == null){
 		 	// var params = {
 				// "token": token,
@@ -114,7 +220,7 @@ exports.save = function(data){
 				// "image": patient_image
 			 // };
 		 // }
-		 client.send(params);
+		 
 	}else{
 		// Cache POST request until internet is detected
 		var db = Ti.Database.open('app');

@@ -153,7 +153,7 @@ win1.add(reportButton);
 // create controls tab and root window
 //
 var win2 = Titanium.UI.createWindow({  
-    title:'Logs',
+    title:'History',
     backgroundColor:'#fff'
 });
 
@@ -165,7 +165,7 @@ logsButton.addEventListener("click", function(e){
 
 var tab2 = Titanium.UI.createTab({  
     icon:'ui/assets/log.png',
-    title:'Logs',
+    title:'History',
     window:win2
 });
 

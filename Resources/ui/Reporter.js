@@ -31,8 +31,8 @@ function Reporter() {
 
 
 	var SpeciesInstructions = Ti.UI.createLabel({
-		top: 25,
-		text: "Please select a mammal, up to 3:",
+		top: 20,
+		text: "Please select mammal species involved",
 	});	
 	
 	var addSpecies = Ti.UI.createButton({
@@ -135,8 +135,6 @@ function Reporter() {
 		});
 		
 	});
-	
-	
 	
 	var scrollableView = Ti.UI.createScrollableView({
 	  views: [ReporterView1, ReporterView2],

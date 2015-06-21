@@ -1,6 +1,7 @@
 eclipse.preferences.version=1
 iosLaunchConfigurationAttributes/ATTR_MINIFY=true
 iosLaunchConfigurationAttributes/ATTR_PROJECT_NAME=MMAP
+iosLaunchConfigurationAttributes/ATTR_UPLOAD_DEBUG_SYMBOLS=false
 iosLaunchConfigurationAttributes/appid=mmap.fishackathon.com
 iosLaunchConfigurationAttributes/certificate=Willie Kwok (6LDBATVD92)
 iosLaunchConfigurationAttributes/keychain=
